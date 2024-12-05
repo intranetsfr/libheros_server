@@ -20,7 +20,7 @@ export class User extends Model<User> {
   email: string;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     allowNull: false,
   })
   password: number;

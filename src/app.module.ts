@@ -3,7 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { AuthModule } from './auth/auth.module';
 import 'dotenv/config'
+import { ConfigModule } from '@nestjs/config';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -17,7 +20,12 @@ import 'dotenv/config'
       autoLoadModels: true,
       synchronize: Boolean(process.env.PRODUCTION)
     }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    AuthModule,
     UsersModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],
