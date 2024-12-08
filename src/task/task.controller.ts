@@ -21,7 +21,7 @@ export class TaskController {
   @Delete()
   async deleteTask(@Query('taskId') taskId: number) {
     if (!taskId) {
-      throw new BadRequestException('Task ID is required');
+      throw new BadRequestException(`l'identifiant de la liste de tache est requise`);
     }
 
     try {
@@ -34,7 +34,7 @@ export class TaskController {
   @Delete('deleteSubtask')
   async deleteSubask(@Query('subtaskId') subtaskId: number) {
     if (!subtaskId) {
-      throw new BadRequestException('Subtask ID is required');
+      throw new BadRequestException(`l'identifiant de la tâche est obligatoire`);
     }
 
     try {
@@ -57,13 +57,12 @@ export class TaskController {
     @Query('subtaskId') subtaskId: number,
     @Body('status') status: 'pending' | 'complete',
   ) {
-    console.log(subtaskId, status);
     if (!subtaskId) {
-      throw new BadRequestException('Task ID is required');
+      throw new BadRequestException(`l'identifiant de la note est obligatoire`);
     }
 
     if (!['pending', 'complete'].includes(status)) {
-      throw new BadRequestException('Invalid status value');
+      throw new BadRequestException(`le status doit être uniquement pending ou complete`);
     }
 
     try {
@@ -72,7 +71,7 @@ export class TaskController {
         status,
       );
       return {
-        message: 'Subtask status updated successfully',
+        message: 'le status de la tâche a été mise à jour',
         subTask: updatedSubTask,
       };
     } catch (error) {
@@ -85,10 +84,18 @@ export class TaskController {
   }
   @Get('getSubtask')
   async getAllSubTasks(@Query('taskId') taskId: string): Promise<Subtask[]> {
+    if (!taskId) {
+      throw new BadRequestException(`L'identifiant de la liste est obligatoire`);
+    }
     return this.taskService.getAllSubTasks(taskId);
   }
   @Get('search')
   async searchTasks(@Query('title') title: string): Promise<Task[]> {
+
+    if (!title) {
+      throw new BadRequestException('Le titre est obligatoire');
+    }
+
     return this.taskService.searchAllTasks(title);
   }
 }
