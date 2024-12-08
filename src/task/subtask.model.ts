@@ -1,4 +1,5 @@
-import { Column, Model, Table, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Task } from './task.model';
 
 @Table
 export class Subtask extends Model<Subtask> {
@@ -8,7 +9,6 @@ export class Subtask extends Model<Subtask> {
   })
   short_description: string;
 
-
   @Column({
     type: DataType.STRING,
     allowNull: true,
@@ -17,7 +17,24 @@ export class Subtask extends Model<Subtask> {
 
   @Column({
     type: DataType.DATE,
+    allowNull: true,
+  })
+  date_end: Date;
+  
+
+  @Column({
+    type: DataType.ENUM('pending', 'complete'),
+    allowNull: true,
+    defaultValue: 'pending'
+  })
+  status: 'pending' | 'complete';
+  @ForeignKey(() => Task)
+  @Column({
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  date_end: string;
+  taskId: number;
+
+  @BelongsTo(() => Task)
+  task: Task;
 }
