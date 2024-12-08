@@ -25,7 +25,6 @@ export class TaskService {
     return this.taskModel.create(taskData);
   }
   async deleteTaskAndSubtasks(taskId:number){
-    console.log(taskId);
     const task = await this.taskModel.findByPk(taskId, {
       include: [Subtask],
     });
