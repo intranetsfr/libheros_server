@@ -8,4 +8,6 @@ export class Task extends Model<Task> {
     allowNull: false,
   })
   title: string;
+  @HasMany(() => Subtask, { onDelete: 'CASCADE' })
+  subtasks: Subtask[];
 }
