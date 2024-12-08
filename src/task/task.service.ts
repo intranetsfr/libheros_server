@@ -24,7 +24,32 @@ export class TaskService {
     }
     return this.taskModel.create(taskData);
   }
+  async deleteTaskAndSubtasks(taskId:number){
+    console.log(taskId);
+    const task = await this.taskModel.findByPk(taskId, {
+      include: [Subtask],
+    });
 
+    if (!task) {
+      throw new Error(`Task with ID ${taskId} not found`);
+    }
+    await this.subTaskModel.destroy({ where: { taskId } });
+
+    await this.taskModel.destroy({ where: { id: taskId } });
+
+    return { message: `la liste des tâches a bien été supprimé ainsi que les tâches associées` };
+
+  }
+  async deleteSubtask(subtaskId:number){
+    const subtask = await this.subTaskModel.findByPk(subtaskId);
+
+    if (!subtask) {
+      throw new Error(`Subtask with ID ${subtaskId} not found`);
+    }
+    await this.subTaskModel.destroy({ where: { id:subtaskId } });
+    return { message: `la tâche a bien été supprimé` };
+
+  }
   async getAllTasks(): Promise<Task[]> {
     return this.taskModel.findAll();
   }
@@ -34,7 +59,6 @@ export class TaskService {
     });
   }
   async updateSubTaskStatus(subTaskId: number, status: 'pending' | 'complete') {
-    console.log(status);
     if (!['pending', 'complete'].includes(status)) {
       throw new Error('Invalid status value');
     }

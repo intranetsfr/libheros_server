@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Query,
@@ -17,6 +18,33 @@ export class TaskController {
   async register(@Body() taskData: Partial<Task>) {
     return this.taskService.create(taskData);
   }
+  @Delete()
+  async deleteTask(@Query('taskId') taskId: number) {
+    if (!taskId) {
+      throw new BadRequestException('Task ID is required');
+    }
+
+    try {
+      const result = await this.taskService.deleteTaskAndSubtasks(taskId);
+      return result;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+  @Delete('deleteSubtask')
+  async deleteSubask(@Query('subtaskId') subtaskId: number) {
+    if (!subtaskId) {
+      throw new BadRequestException('Subtask ID is required');
+    }
+
+    try {
+      const result = await this.taskService.deleteSubtask(subtaskId);
+      return result;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   @Post('addSubTask')
   async addSubTask(
     @Query('taskId') taskId: string,
