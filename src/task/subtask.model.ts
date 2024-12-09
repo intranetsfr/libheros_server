@@ -10,7 +10,7 @@ export class Subtask extends Model<Subtask> {
   short_description: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
     allowNull: true,
   })
   long_description: string;
@@ -20,7 +20,6 @@ export class Subtask extends Model<Subtask> {
     allowNull: true,
   })
   date_end: Date;
-  
 
   @Column({
     type: DataType.ENUM('pending', 'complete'),

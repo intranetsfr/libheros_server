@@ -20,7 +20,7 @@ export class TaskService {
       where: { title: taskData.title },
     });
     if (existingTask) {
-      throw new ConflictException('A task with this title already exists.');
+      throw new ConflictException(`cette liste de tâche existe "${taskData.title}" déjà`);
     }
     return this.taskModel.create(taskData);
   }
@@ -30,7 +30,7 @@ export class TaskService {
     });
 
     if (!task) {
-      throw new Error(`Task with ID ${taskId} not found`);
+      throw new Error(`l'identifiant ${taskId} n'a pas été trouvé`);
     }
     await this.subTaskModel.destroy({ where: { taskId } });
 
@@ -43,7 +43,7 @@ export class TaskService {
     const subtask = await this.subTaskModel.findByPk(subtaskId);
 
     if (!subtask) {
-      throw new Error(`Subtask with ID ${subtaskId} not found`);
+      throw new Error(`la tache ${subtaskId} n'a pas été trouvé`);
     }
     await this.subTaskModel.destroy({ where: { id:subtaskId } });
     return { message: `la tâche a bien été supprimé` };
@@ -59,14 +59,14 @@ export class TaskService {
   }
   async updateSubTaskStatus(subTaskId: number, status: 'pending' | 'complete') {
     if (!['pending', 'complete'].includes(status)) {
-      throw new Error('Invalid status value');
+      throw new Error('impossible de mettre à jour avec ce status');
     }
     const [updatedRowsCount] = await this.subTaskModel.update(
       { status },
       { where: { id: subTaskId } }
     );
     if (updatedRowsCount === 0) {
-      throw new Error(`No Subtask found with id ${subTaskId}`);
+      throw new Error(`impossible de mettre à jour cette tâche ${subTaskId}`);
     }
   
     const updatedSubTask = await this.subTaskModel.findByPk(subTaskId);
@@ -88,7 +88,7 @@ export class TaskService {
   ): Promise<Subtask> {
     const task = await this.taskModel.findByPk(taskId);
     if (!task) {
-      throw new NotFoundException(`Task with ID ${taskId} not found`);
+      throw new NotFoundException(`l'identifiant de cette liste : ${taskId} n'a pas été trouvé`);
     }
     const data = {
       short_description: subtaskData.short_description,
